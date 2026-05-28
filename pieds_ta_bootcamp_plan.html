@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PIEDS Technical Analysis Bootcamp — 5-day curriculum from candlesticks to strategy and risk management." />
+  <title>PIEDS · Technical Analysis Bootcamp</title>
+  <style>
+    :root {
+      --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --color-bg: #0a0f14;
+      --color-bg-elevated: #111922;
+      --color-bg-card: #151d28;
+      --color-bg-card-hover: #1a2433;
+      --color-border: rgba(255, 255, 255, 0.08);
+      --color-border-strong: rgba(255, 255, 255, 0.14);
+      --color-text-primary: #f0f4f8;
+      --color-text-secondary: #94a3b8;
+      --color-text-muted: #64748b;
+      --color-accent: #3b9eff;
+      --color-accent-soft: rgba(59, 158, 255, 0.12);
+      --color-accent-glow: rgba(59, 158, 255, 0.25);
+      --color-background-primary: var(--color-bg-card);
+      --color-background-secondary: var(--color-bg-elevated);
+      --color-background-info: var(--color-accent-soft);
+      --color-text-info: #7ec8ff;
+      --color-border-secondary: var(--color-border-strong);
+      --color-border-tertiary: var(--color-border);
+      --border-radius-md: 8px;
+      --border-radius-lg: 12px;
+      --border-radius-xl: 20px;
+      --max-width: 920px;
+      --header-height: 64px;
+      --day-1: #3b9eff;
+      --day-2: #34d399;
+      --day-3: #fbbf24;
+      --day-4: #a78bfa;
+      --day-5: #f472b6;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59, 158, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 158, 255, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow {
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80vw;
+      max-width: 700px;
+      height: 50vh;
+      background: radial-gradient(ellipse, var(--color-accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem;
+      background: rgba(10, 15, 20, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .logo {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    .header-meta {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 3.5rem 1.25rem 2rem;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      background: var(--color-accent-soft);
+      border: 1px solid rgba(59, 158, 255, 0.3);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-family: var(--font-sans);
+      font-size: clamp(2.25rem, 6vw, 3.25rem);
+      font-weight: 600;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--color-accent);
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      max-width: 32rem;
+      margin: 0 auto 2rem;
+    }
+
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .stat {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1rem 1.5rem;
+      min-width: 120px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.25rem 4rem;
+    }
+
+    .nav-wrap {
+      position: sticky;
+      top: var(--header-height);
+      z-index: 50;
+      padding: 0.75rem 0 1rem;
+      background: linear-gradient(var(--color-bg) 60%, transparent);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 4px;
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: fit-content;
+      padding: 0.55rem 1rem;
+      border-radius: var(--border-radius-md);
+      border: none;
+      background: transparent;
+      color: var(--color-text-secondary);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--color-text-primary);
+    }
+
+    .tab-btn.active {
+      background: var(--color-accent);
+      color: #0a0f14;
+      box-shadow: 0 2px 12px var(--color-accent-glow);
+    }
+
+    .tab-btn:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .day-panel { display: none; animation: fadeIn 0.3s ease; }
+    .day-panel.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .day-header {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-xl);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .day-badge {
+      background: var(--day-color, var(--color-accent));
+      color: #0a0f14;
+      border-radius: var(--border-radius-md);
+      padding: 0.4rem 0.85rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .day-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .day-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    .day-theme {
+      display: inline-block;
+      margin-top: 0.5rem;
+      background: var(--color-accent-soft);
+      color: var(--color-text-info);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--border-radius-md);
+    }
+
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+
+    .seg {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .seg-time {
+      min-width: 72px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      padding-top: 1rem;
+      text-align: right;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .seg-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .seg-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 1.05rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px var(--color-bg), 0 0 12px var(--day-color, var(--color-accent));
+      background: var(--day-color, var(--color-accent));
+    }
+
+    .seg-line {
+      width: 2px;
+      flex: 1;
+      min-height: 24px;
+      background: linear-gradient(var(--day-color, var(--color-accent)), var(--color-border));
+      opacity: 0.5;
+    }
+
+    .seg-card {
+      flex: 1;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1rem 1.15rem;
+      margin-bottom: 0.65rem;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .seg-card:hover {
+      border-color: var(--color-border-strong);
+      background: var(--color-bg-card-hover);
+    }
+
+    .seg-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 0.35rem;
+    }
+
+    .seg-desc {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      line-height: 1.65;
+    }
+
+    .seg-desc strong { font-weight: 600; color: var(--color-text-primary); }
+
+    .seg-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 0.65rem;
+    }
+
+    .tag {
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      background: var(--color-bg-elevated);
+    }
+
+    .tag.method { background: rgba(52, 211, 153, 0.12); color: #6ee7b7; border-color: rgba(52, 211, 153, 0.3); }
+    .tag.concept { background: var(--color-accent-soft); color: #7ec8ff; border-color: rgba(59, 158, 255, 0.3); }
+    .tag.activity { background: rgba(251, 191, 36, 0.12); color: #fcd34d; border-color: rgba(251, 191, 36, 0.3); }
+
+    .outcome-box {
+      margin-top: 1.25rem;
+      background: var(--color-bg-elevated);
+      border-left: 3px solid var(--day-color, var(--color-accent));
+      border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;
+      padding: 1rem 1.15rem;
+      border: 1px solid var(--color-border);
+      border-left-width: 3px;
+    }
+
+    .outcome-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    .outcome-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .outcome-list li {
+      font-size: 0.85rem;
+      color: var(--color-text-primary);
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    .outcome-list li::before {
+      content: "→";
+      color: var(--day-color, var(--color-accent));
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .overview-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1.1rem 1.15rem;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      text-align: left;
+      font-family: inherit;
+      color: inherit;
+      width: 100%;
+    }
+
+    .overview-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .overview-card:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .ov-day {
+      font-size: 0.65rem;
+      color: var(--color-accent);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .ov-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 0.35rem;
+    }
+
+    .ov-desc {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+
+    .diff-bar {
+      display: flex;
+      gap: 3px;
+      margin-top: 0.75rem;
+    }
+
+    .diff-pip {
+      height: 4px;
+      flex: 1;
+      border-radius: 2px;
+      background: var(--color-border);
+    }
+
+    .diff-pip.filled { background: var(--color-accent); }
+
+    .arc-section {
+      margin-top: 0.5rem;
+    }
+
+    .site-footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem 1.25rem;
+      border-top: 1px solid var(--color-border);
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+
+    .site-footer strong { color: var(--color-text-secondary); }
+
+    #d1 { --day-color: var(--day-1); }
+    #d2 { --day-color: var(--day-2); }
+    #d3 { --day-color: var(--day-3); }
+    #d4 { --day-color: var(--day-4); }
+    #d5 { --day-color: var(--day-5); }
+
+    .supplement {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .supplement-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--day-color, var(--color-accent));
+    }
+
+    .supplement-intro {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 1.15rem;
+      line-height: 1.6;
+    }
+
+    .ref-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .ref-card {
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1rem 1.1rem;
+    }
+
+    .ref-card h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 0.45rem;
+    }
+
+    .ref-card p,
+    .ref-card li {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      line-height: 1.55;
+    }
+
+    .ref-card ul {
+      margin: 0.35rem 0 0 1.1rem;
+    }
+
+    .ref-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+    }
+
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    .ref-table th,
+    .ref-table td {
+      border-bottom: 1px solid var(--color-border);
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .ref-table tr:last-child td,
+    .ref-table tr:last-child th { border-bottom: none; }
+
+    .ref-table th {
+      background: var(--color-bg-elevated);
+      color: var(--color-text-primary);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .ref-table td { color: var(--color-text-secondary); }
+
+    .callout {
+      background: var(--color-accent-soft);
+      border: 1px solid rgba(59, 158, 255, 0.22);
+      border-radius: var(--border-radius-lg);
+      padding: 0.9rem 1rem;
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .callout strong { color: var(--color-text-primary); font-weight: 600; }
+
+    .tips-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+    }
+
+    .tips-list li {
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      padding-left: 1rem;
+      position: relative;
+      line-height: 1.55;
+    }
+
+    .tips-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--day-color, var(--color-accent));
+      font-weight: 700;
+    }
+
+    .source-note {
+      font-size: 0.72rem;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .source-note a {
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    .source-note a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .seg { flex-direction: column; gap: 0; }
+      .seg-time { text-align: left; padding-top: 0; min-width: auto; }
+      .seg-connector { flex-direction: row; align-items: center; gap: 8px; margin-bottom: 0.25rem; }
+      .seg-dot { margin-top: 0; }
+      .seg-line { width: auto; height: 2px; flex: 1; min-height: 0; min-width: 20px; }
+      .tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+      .tab-btn { flex: 0 0 auto; }
+    }
+
+    @media print {
+      .bg-grid, .bg-glow, .site-header, .nav-wrap { display: none; }
+      body { background: #fff; color: #111; }
+      .day-panel { display: block !important; page-break-inside: avoid; }
+      .seg-card { border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="logo" href="#">PIEDS</a>
+    <span class="header-meta">TA Bootcamp · Instructor guide</span>
+  </header>
+
+  <section class="hero">
+    <div class="hero-badge">5-day curriculum</div>
+    <h1>Technical Analysis <em>Bootcamp</em></h1>
+    <p class="hero-sub">
+      A structured hour-by-hour plan from chart basics to a full trade framework — designed for teaching sessions at PIEDS.
+    </p>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Days</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">60</div>
+        <div class="stat-label">Min / session</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Skill levels</div>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="sr-only">5-day PIEDS technical analysis bootcamp plan, with per-session timelines and teaching methods</h2>
+
+  <div class="container">
+    <div class="nav-wrap">
+      <nav class="tabs" id="tabs" aria-label="Bootcamp days">
+        <button type="button" class="tab-btn active" data-tab="overview">Overview</button>
+        <button type="button" class="tab-btn" data-tab="d1">Day 1</button>
+        <button type="button" class="tab-btn" data-tab="d2">Day 2</button>
+        <button type="button" class="tab-btn" data-tab="d3">Day 3</button>
+        <button type="button" class="tab-btn" data-tab="d4">Day 4</button>
+        <button type="button" class="tab-btn" data-tab="d5">Day 5</button>
+      </nav>
+    </div>
+
+    <div class="day-panel active" id="overview">
+      <div class="overview-grid">
+        <button type="button" class="overview-card" data-goto="d1">
+          <div class="ov-day">Day 1</div>
+          <div class="ov-title">Charts & Candlesticks</div>
+          <div class="ov-desc">Market structure, chart types, reading candlestick patterns from scratch</div>
+          <div class="diff-bar"><div class="diff-pip filled"></div><div class="diff-pip"></div><div class="diff-pip"></div><div class="diff-pip"></div><div class="diff-pip"></div></div>
+        </button>
+        <button type="button" class="overview-card" data-goto="d2">
+          <div class="ov-day">Day 2</div>
+          <div class="ov-title">Trend & Moving Averages</div>
+          <div class="ov-desc">Support/resistance, trend lines, SMA vs EMA, golden/death cross</div>
+          <div class="diff-bar"><div class="diff-pip filled"></div><div class="diff-pip filled"></div><div class="diff-pip"></div><div class="diff-pip"></div><div class="diff-pip"></div></div>
+        </button>
+        <button type="button" class="overview-card" data-goto="d3">
+          <div class="ov-day">Day 3</div>
+          <div class="ov-title">Momentum Indicators</div>
+          <div class="ov-desc">RSI, MACD, Bollinger Bands, volume analysis and divergences</div>
+          <div class="diff-bar"><div class="diff-pip filled"></div><div class="diff-pip filled"></div><div class="diff-pip filled"></div><div class="diff-pip"></div><div class="diff-pip"></div></div>
+        </button>
+        <button type="button" class="overview-card" data-goto="d4">
+          <div class="ov-day">Day 4</div>
+          <div class="ov-title">Chart Patterns</div>
+          <div class="ov-desc">Reversal & continuation patterns, entries, targets, stop-losses</div>
+          <div class="diff-bar"><div class="diff-pip filled"></div><div class="diff-pip filled"></div><div class="diff-pip filled"></div><div class="diff-pip filled"></div><div class="diff-pip"></div></div>
+        </button>
+        <button type="button" class="overview-card" data-goto="d5">
+          <div class="ov-day">Day 5</div>
+          <div class="ov-title">Strategy & Risk Management</div>
+          <div class="ov-desc">Multi-timeframe, confluences, position sizing, full trade plan</div>
+          <div class="diff-bar"><div class="diff-pip filled"></div><div class="diff-pip filled"></div><div class="diff-pip filled"></div><div class="diff-pip filled"></div><div class="diff-pip filled"></div></div>
+        </button>
+      </div>
+      <div class="outcome-box arc-section">
+        <div class="outcome-title">Bootcamp learning arc</div>
+        <ul class="outcome-list">
+          <li>Days 1–2: Build the visual language — how price behaves and trends</li>
+          <li>Day 3: Layer in quantitative signals — momentum, volatility, volume</li>
+          <li>Day 4: Pattern recognition as a predictive tool</li>
+          <li>Day 5: Bring it all together into a real, executable trade framework</li>
+        </ul>
+      </div>
+
+      <section class="supplement" aria-labelledby="overview-ref">
+        <h3 class="supplement-title" id="overview-ref">What is technical analysis?</h3>
+        <p class="supplement-intro">Technical analysis (TA) studies historical price and volume to identify trends, levels, and repeatable setups. It assumes that market psychology and liquidity show up in charts before headlines fully digest. TA does not predict with certainty — it helps you trade with defined risk when probabilities favor your plan.</p>
+        <div class="ref-grid">
+          <div class="ref-card">
+            <h4>Five pillars of this bootcamp</h4>
+            <ul>
+              <li><strong>Price action</strong> — candles and patterns</li>
+              <li><strong>Structure</strong> — trend, S/R, moving averages</li>
+              <li><strong>Momentum &amp; volatility</strong> — RSI, MACD, Bollinger Bands</li>
+              <li><strong>Formations</strong> — H&amp;S, flags, triangles, etc.</li>
+              <li><strong>Process</strong> — multi-timeframe bias, sizing, journal</li>
+            </ul>
+          </div>
+          <div class="ref-card">
+            <h4>Golden rules for attendees</h4>
+            <ul>
+              <li>Never risk more than 1–2% of capital on one trade.</li>
+              <li>Always know your stop and target before entry.</li>
+              <li>Context beats isolated patterns.</li>
+              <li>Paper trade until your checklist is consistent.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="source-note">Intro references: <a href="https://www.investopedia.com/terms/t/technicalanalysis.asp" target="_blank" rel="noopener noreferrer">Investopedia — Technical analysis</a> · <a href="https://school.stockcharts.com/doku.php?id=chart_analysis" target="_blank" rel="noopener noreferrer">StockCharts ChartSchool</a></p>
+      </section>
+    </div>
+
+    <div class="day-panel" id="d1">
+      <div class="day-header">
+        <div class="day-badge">Day 1 · 60 min</div>
+        <div>
+          <div class="day-title">Charts & Candlestick patterns</div>
+          <div class="day-subtitle">Market basics, chart types, and reading price action visually</div>
+          <span class="day-theme">Difficulty: Beginner</span>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="seg">
+          <div class="seg-time">0–5 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Hook & Context Setting</div>
+            <div class="seg-desc">Open with a screenshot of a real stock or index chart. Ask: "What does this tell you?" Let attendees respond. Establish that TA is about reading price behavior, not predicting the future with certainty. Briefly explain the difference between fundamental and technical analysis.</div>
+            <div class="seg-tags"><span class="tag activity">Discussion</span><span class="tag concept">FA vs TA</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">5–15 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Market structure & chart types</div>
+            <div class="seg-desc">Explain what a financial chart plots (price vs time). Show Line chart → Bar chart → Candlestick chart — explain why candlesticks became the standard. Cover timeframes: 1min, 15min, 1H, Daily, Weekly. Explain that every candle = Open, High, Low, Close (OHLC) and what each value represents.</div>
+            <div class="seg-tags"><span class="tag concept">OHLC</span><span class="tag concept">Timeframes</span><span class="tag method">Live demo on TradingView</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">15–35 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Core candlestick patterns — anatomy first</div>
+            <div class="seg-desc">Draw a single candle on a whiteboard — body, wick, shadow. Bullish vs bearish candle. Then introduce patterns in 3 groups:<br><br><strong>Single candle:</strong> Doji (indecision), Hammer (bullish reversal), Shooting Star (bearish reversal), Marubozu (strong conviction), Spinning Top.<br><br><strong>Two-candle:</strong> Bullish/Bearish Engulfing, Harami, Piercing Line, Dark Cloud Cover.<br><br><strong>Three-candle:</strong> Morning Star, Evening Star, Three White Soldiers, Three Black Crows.<br><br>For each, explain the psychology: who was winning before, what shifted, and what follow-through looks like.</div>
+            <div class="seg-tags"><span class="tag concept">Single candle</span><span class="tag concept">2-candle</span><span class="tag concept">3-candle</span><span class="tag method">Whiteboard + real chart examples</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">35–50 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Live identification exercise</div>
+            <div class="seg-desc">Pull up 3–4 real charts (NIFTY, Reliance, or any index). Point to different candles and ask attendees to identify the pattern. Discuss what context it appeared in — was it at a high or low? Was volume high? Introduce the critical rule: context &gt; pattern. A hammer at support is very different from a hammer in mid-air.</div>
+            <div class="seg-tags"><span class="tag activity">Spot-the-pattern quiz</span><span class="tag method">TradingView screenshare</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">50–60 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Recap & assignment</div>
+            <div class="seg-desc">Summarize: what a candle tells you, the 10 most important patterns. Give homework: open TradingView, find 5 real examples of any pattern they learned, and save the charts. Tell them Day 2 will explain where to look for these patterns (support/resistance).</div>
+            <div class="seg-tags"><span class="tag activity">Homework set</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="outcome-box">
+        <div class="outcome-title">Day 1 outcomes</div>
+        <ul class="outcome-list">
+          <li>Can read any candlestick chart and extract OHLC info</li>
+          <li>Can identify 10+ candlestick patterns and explain the psychology</li>
+          <li>Understands why context (price location) matters more than the pattern alone</li>
+        </ul>
+      </div>
+
+      <section class="supplement" aria-labelledby="d1-ref">
+        <h3 class="supplement-title" id="d1-ref">Extended reference · Charts &amp; candlesticks</h3>
+        <p class="supplement-intro">Candlestick charts pack open, high, low, and close (OHLC) into one bar so you can read sentiment quickly. They originated in 18th-century Japan for rice trading and are now standard on every major platform (TradingView, NSE/BSE terminals). Patterns are probabilistic — reliability rises with trend context, support/resistance, and volume confirmation.</p>
+
+        <div class="callout"><strong>Core anatomy:</strong> The <em>body</em> spans open to close; <em>wicks/shadows</em> show the session high and low. A long lower wick with a small body at the top often signals rejection of lower prices (buying pressure). Color convention: green/white = close above open (bullish); red/black = close below open (bearish).</div>
+
+        <div class="ref-table-wrap">
+          <table class="ref-table">
+            <thead>
+              <tr><th>Pattern</th><th>Candles</th><th>Typical signal</th><th>Psychology</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Doji</td><td>1</td><td>Indecision / possible reversal</td><td>Open ≈ close; buyers and sellers balanced</td></tr>
+              <tr><td>Hammer</td><td>1</td><td>Bullish reversal (at support)</td><td>Sellers pushed down; buyers reclaimed close</td></tr>
+              <tr><td>Shooting star</td><td>1</td><td>Bearish reversal (at resistance)</td><td>Buyers pushed up; sellers sold into strength</td></tr>
+              <tr><td>Engulfing</td><td>2</td><td>Strong reversal</td><td>Second body fully swallows first — momentum flip</td></tr>
+              <tr><td>Harami</td><td>2</td><td>Reversal (weaker)</td><td>Small inside candle — trend losing steam</td></tr>
+              <tr><td>Morning star</td><td>3</td><td>Bullish reversal</td><td>Sell-off → indecision → strong bullish close</td></tr>
+              <tr><td>Evening star</td><td>3</td><td>Bearish reversal</td><td>Rally → gap/indecision → strong bearish close</td></tr>
+              <tr><td>Three white soldiers</td><td>3</td><td>Strong bullish continuation</td><td>Three large green bodies — sustained buying</td></tr>
+              <tr><td>Three black crows</td><td>3</td><td>Strong bearish continuation</td><td>Three large red bodies — sustained selling</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ref-grid">
+          <div class="ref-card">
+            <h4>Chart types compared</h4>
+            <ul>
+              <li><strong>Line chart</strong> — closing prices only; good for macro trend, hides intraday detail.</li>
+              <li><strong>Bar chart (OHLC)</strong> — full range per period; less visual than candles.</li>
+              <li><strong>Candlestick</strong> — OHLC plus color; best for pattern recognition and teaching.</li>
+              <li><strong>Heikin-Ashi</strong> — smoothed candles; trends look cleaner but lag real price.</li>
+            </ul>
+          </div>
+          <div class="ref-card">
+            <h4>Timeframes (what each is for)</h4>
+            <ul>
+              <li><strong>1m–15m</strong> — scalping / intraday noise; patterns expire fast.</li>
+              <li><strong>1H–4H</strong> — swing entries; combine with daily bias.</li>
+              <li><strong>Daily</strong> — standard for pattern reliability (one candle = one session).</li>
+              <li><strong>Weekly</strong> — macro trend and major S/R; filters lower-TF trades.</li>
+            </ul>
+          </div>
+          <div class="ref-card">
+            <h4>FA vs TA (quick contrast)</h4>
+            <p><strong>Fundamental analysis</strong> values a company or economy (earnings, GDP, policy). <strong>Technical analysis</strong> studies price and volume history to find repeatable behavior. Many traders use FA for <em>what</em> to watch and TA for <em>when</em> to act. Neither guarantees outcomes.</p>
+          </div>
+        </div>
+
+        <ul class="tips-list">
+          <li>Wait for the candle to <strong>close</strong> before calling a pattern — mid-candle shapes often disappear.</li>
+          <li>Backtests suggest raw patterns alone win ~50–55% of the time; with trend + S/R + volume, edges can reach ~60–70%.</li>
+          <li>Three-candle patterns (morning/evening star) are generally more reliable than single-candle signals.</li>
+          <li>Thomas Bulkowski’s pattern statistics (thepatternsite.com) are a widely cited benchmark for pattern performance.</li>
+          <li>Indian context: practice on NIFTY 50, BANK NIFTY, and liquid large-caps (Reliance, TCS) for clean candles.</li>
+        </ul>
+
+        <p class="source-note">Further reading: <a href="https://www.investopedia.com/terms/c/candlestick.asp" target="_blank" rel="noopener noreferrer">Investopedia — Candlestick chart</a> · <a href="https://www.investopedia.com/articles/active-trading/092315/5-most-powerful-candlestick-patterns.asp" target="_blank" rel="noopener noreferrer">5 powerful candlestick patterns</a> · <a href="https://www.ig.com/en/trading-strategies/16-candlestick-patterns-every-trader-should-know-NEW-180615" target="_blank" rel="noopener noreferrer">IG — 16 patterns guide</a></p>
+      </section>
+    </div>
+
+    <div class="day-panel" id="d2">
+      <div class="day-header">
+        <div class="day-badge">Day 2 · 60 min</div>
+        <div>
+          <div class="day-title">Trend, support/resistance & moving averages</div>
+          <div class="day-subtitle">Understanding where price respects levels and how to ride trends</div>
+          <span class="day-theme">Difficulty: Beginner–Intermediate</span>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="seg">
+          <div class="seg-time">0–5 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Homework review & bridge</div>
+            <div class="seg-desc">Ask 2–3 attendees to share their homework charts. Quickly validate/correct their pattern identification. Bridge to today: patterns only become useful when you know where in the chart to look for them — which is at key price levels.</div>
+            <div class="seg-tags"><span class="tag activity">Homework review</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">5–20 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Support, resistance & trend lines</div>
+            <div class="seg-desc">Define support (price floor — buyers step in) and resistance (price ceiling — sellers step in). Show how to draw them: connect 2+ swing lows for support, 2+ swing highs for resistance. Introduce role reversal — broken support becomes resistance and vice versa.<br><br>Draw uptrend (higher highs, higher lows), downtrend (lower highs, lower lows), and sideways/consolidation. Emphasize: the trend is your friend until it isn't. Show how to draw a trendline correctly (at least 2 touches, 3 confirms). Discuss dynamic vs static levels.</div>
+            <div class="seg-tags"><span class="tag concept">Support</span><span class="tag concept">Resistance</span><span class="tag concept">Role reversal</span><span class="tag method">Draw live on TradingView</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">20–40 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Moving averages — SMA vs EMA</div>
+            <div class="seg-desc">Explain the concept: MAs smooth out price noise to reveal the trend. SMA (Simple) = equal weight to all candles. EMA (Exponential) = more weight to recent candles, reacts faster.<br><br>Key MA periods: 20 (short-term), 50 (medium), 200 (long-term institutional benchmark). Add all three to a live chart and show how each reacts differently to price moves.<br><br>Golden Cross (50 MA crosses above 200 MA = bullish) and Death Cross (opposite = bearish). Price above 200 MA = broadly bullish environment. MA as dynamic support/resistance — price bounces off MA levels repeatedly. Walk through 2–3 real examples.</div>
+            <div class="seg-tags"><span class="tag concept">SMA</span><span class="tag concept">EMA</span><span class="tag concept">Golden cross</span><span class="tag concept">Death cross</span><span class="tag method">TradingView live demo</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">40–52 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Combining Day 1 + Day 2 — first confluence</div>
+            <div class="seg-desc">Show a chart where a hammer candle appears exactly at a support level that also coincides with the 50 EMA. Explain this is confluence — multiple signals agreeing — and it's a much higher conviction setup than any one signal alone. This is the core philosophy of TA. Do a group exercise: pull up a chart, ask attendees to identify SR levels, trend, MA position, and any candle patterns together.</div>
+            <div class="seg-tags"><span class="tag concept">Confluence</span><span class="tag activity">Group exercise</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">52–60 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Recap & homework</div>
+            <div class="seg-desc">Recap SR, trendlines, MAs, golden/death cross. Assignment: pick any stock, draw the key SR levels, overlay 20/50/200 EMA, and identify whether price is in an uptrend, downtrend, or range. Note what confluence points they find.</div>
+            <div class="seg-tags"><span class="tag activity">Homework set</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="outcome-box">
+        <div class="outcome-title">Day 2 outcomes</div>
+        <ul class="outcome-list">
+          <li>Can identify and draw support, resistance, and trendlines accurately</li>
+          <li>Understands the difference between SMA and EMA and when to use each</li>
+          <li>Can spot golden/death cross and understand their significance</li>
+          <li>Begins to think in terms of confluence, not single signals</li>
+        </ul>
+      </div>
+
+      <section class="supplement" aria-labelledby="d2-ref">
+        <h3 class="supplement-title" id="d2-ref">Extended reference · Trend, S/R &amp; moving averages</h3>
+        <p class="supplement-intro">Support and resistance are price zones where buying or selling pressure historically concentrated. Moving averages smooth price to reveal trend and often act as <em>dynamic</em> support/resistance. Crossovers (golden/death cross) signal longer-term sentiment shifts but work best as filters, not standalone buy signals.</p>
+
+        <div class="callout"><strong>Definitions:</strong> <strong>Support</strong> — floor where buyers tend to enter; price struggles to fall below. <strong>Resistance</strong> — ceiling where sellers tend to appear. <strong>Role reversal</strong> — broken support often becomes resistance on retest (and vice versa). <strong>Uptrend</strong> = higher highs + higher lows; <strong>downtrend</strong> = lower highs + lower lows.</div>
+
+        <div class="ref-table-wrap">
+          <table class="ref-table">
+            <thead>
+              <tr><th>MA type</th><th>Formula idea</th><th>Behavior</th><th>Common use</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>SMA</td><td>Average of last N closes</td><td>Slower, equal weight</td><td>200 SMA for long-term trend filter</td></tr>
+              <tr><td>EMA</td><td>Weighted toward recent prices</td><td>Faster reaction</td><td>20/50 EMA for swing entries</td></tr>
+              <tr><td>Golden cross</td><td>50 crosses above 200</td><td>Bullish regime signal</td><td>Confirm with price above both MAs</td></tr>
+              <tr><td>Death cross</td><td>50 crosses below 200</td><td>Bearish regime signal</td><td>Often lagging — trend may be mature</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ref-grid">
+          <div class="ref-card">
+            <h4>Drawing S/R &amp; trendlines</h4>
+            <ul>
+              <li>Connect at least <strong>two</strong> swing lows (support) or highs (resistance); <strong>three touches</strong> strengthen the level.</li>
+              <li>Zones beat exact prices — markets are messy; use areas, not pixel-perfect lines.</li>
+              <li>Round numbers (e.g. NIFTY 24,000) and prior day high/low often act as psychological levels.</li>
+              <li>Fibonacci retracements (38.2%, 50%, 61.8%) are popular short-term S/R tools on pullbacks.</li>
+            </ul>
+          </div>
+          <div class="ref-card">
+            <h4>Key MA periods</h4>
+            <ul>
+              <li><strong>20</strong> — short-term trend / swing mean (about one trading month).</li>
+              <li><strong>50</strong> — medium-term; institutional watch level.</li>
+              <li><strong>200</strong> — long-term bull/bear divider on daily charts.</li>
+              <li>Price <strong>above</strong> rising 200 MA → broadly bullish environment; below → defensive bias.</li>
+            </ul>
+          </div>
+          <div class="ref-card">
+            <h4>Confluence example (Day 1 + 2)</h4>
+            <p>Hammer at horizontal support + 50 EMA + prior swing low + RSI not overbought = multiple independent reasons to watch for a bounce. One signal alone is weak; stacked signals define A+ setups.</p>
+          </div>
+        </div>
+
+        <ul class="tips-list">
+          <li>In strong uptrends, “overbought” oscillators can stay elevated — trade <strong>with</strong> the trend until structure breaks.</li>
+          <li>Golden crosses are bullish but often late; many traders wait for a <strong>pullback to the 50 MA</strong> instead of chasing the crossover bar.</li>
+          <li>Death/golden crosses can whipsaw in sideways markets — check ADX or slope of 200 MA for trend strength.</li>
+          <li>Dynamic S/R: in uptrends price often bounces off 20/50 EMA; in downtrends those same lines act as resistance.</li>
+        </ul>
+
+        <p class="source-note">Further reading: <a href="https://www.investopedia.com/trading/support-and-resistance-basics/" target="_blank" rel="noopener noreferrer">Investopedia — S/R basics</a> · <a href="https://www.investopedia.com/terms/m/movingaverage.asp" target="_blank" rel="noopener noreferrer">Moving average</a> · <a href="https://www.investopedia.com/articles/active-trading/052014/how-use-moving-average-buy-stocks.asp" target="_blank" rel="noopener noreferrer">Using MAs to buy stocks</a> · <a href="https://www.fidelity.com/viewpoints/active-investor/moving-averages" target="_blank" rel="noopener noreferrer">Fidelity — Moving averages</a></p>
+      </section>
+    </div>
+
+    <div class="day-panel" id="d3">
+      <div class="day-header">
+        <div class="day-badge">Day 3 · 60 min</div>
+        <div>
+          <div class="day-title">Momentum indicators & volume</div>
+          <div class="day-subtitle">RSI, MACD, Bollinger Bands — reading the engine behind price</div>
+          <span class="day-theme">Difficulty: Intermediate</span>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="seg">
+          <div class="seg-time">0–5 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Frame the problem</div>
+            <div class="seg-desc">Ask: "You've identified an uptrend and see a hammer at support — but how do you know if price has enough momentum to follow through?" That's the job of indicators. Differentiate: leading indicators (RSI, Stochastic) attempt to predict. Lagging indicators (MACD, MAs) confirm. Neither is perfect — they complement price action.</div>
+            <div class="seg-tags"><span class="tag concept">Leading vs lagging</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">5–20 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">RSI — Relative Strength Index</div>
+            <div class="seg-desc">RSI measures speed and magnitude of price moves on a 0–100 scale. Above 70 = overbought (potential reversal or pause). Below 30 = oversold (potential bounce). Midline at 50 = trend bias — above = bullish, below = bearish.<br><br>The real power: RSI divergence. <strong>Bullish divergence</strong>: price makes lower lows, RSI makes higher lows — buyers are gaining strength. <strong>Bearish divergence</strong>: price makes higher highs, RSI makes lower highs — trend weakening. Show 2 real examples of divergence leading to reversals. Warn: overbought doesn't mean "sell immediately" — strong trends can stay overbought for long.</div>
+            <div class="seg-tags"><span class="tag concept">RSI 30/70</span><span class="tag concept">Divergence</span><span class="tag method">Live chart demo</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">20–35 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">MACD — Moving Average Convergence Divergence</div>
+            <div class="seg-desc">MACD = 12 EMA minus 26 EMA. Signal line = 9 EMA of MACD. Histogram = MACD minus signal line (shows momentum strength). Three signals: (1) MACD crossing above signal line = bullish momentum signal. (2) MACD crossing zero line = trend confirmation. (3) Histogram shrinking before a cross = early warning. Also show MACD divergence — similar to RSI divergence but on a histogram. Overlay both RSI and MACD on a single chart and discuss which signal to trust when they disagree.</div>
+            <div class="seg-tags"><span class="tag concept">MACD line</span><span class="tag concept">Signal line</span><span class="tag concept">Histogram</span><span class="tag concept">Zero cross</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">35–48 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Bollinger Bands & volume</div>
+            <div class="seg-desc"><strong>Bollinger Bands:</strong> 20 SMA as middle band, +2/-2 standard deviations as outer bands. Price touches upper band = potentially overbought in that context. Price touches lower band = potentially oversold. Band squeeze (bands narrowing) = low volatility consolidation, predicts a big move coming. Breakout after squeeze = high-conviction directional move.<br><br><strong>Volume:</strong> Volume confirms moves. High volume on a breakout = real. Low volume on a breakout = suspect (likely to fail). Volume spike on a reversal candle = strong signal. Show: bullish engulfing on 3x average volume vs on low volume — very different implications.</div>
+            <div class="seg-tags"><span class="tag concept">BB squeeze</span><span class="tag concept">Volume confirmation</span><span class="tag method">Show real breakout examples</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">48–60 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Indicator stacking exercise + recap</div>
+            <div class="seg-desc">Pull up a chart, add all indicators (RSI, MACD, BB, Volume). Walk through a full read together: "Trend? MA position? RSI level? MACD signal? Volume on last move?" Make it feel like a checklist. Point out that more indicators ≠ better — the goal is 2–3 that you understand deeply. Homework: analyze the same stock from Day 2 homework using all three indicators.</div>
+            <div class="seg-tags"><span class="tag activity">Full-stack analysis exercise</span><span class="tag activity">Homework set</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="outcome-box">
+        <div class="outcome-title">Day 3 outcomes</div>
+        <ul class="outcome-list">
+          <li>Can set up and interpret RSI including divergences</li>
+          <li>Understands all three components of MACD and their signals</li>
+          <li>Can read Bollinger Band squeezes and breakouts</li>
+          <li>Uses volume to confirm or question any signal</li>
+        </ul>
+      </div>
+
+      <section class="supplement" aria-labelledby="d3-ref">
+        <h3 class="supplement-title" id="d3-ref">Extended reference · RSI, MACD, Bollinger Bands &amp; volume</h3>
+        <p class="supplement-intro">Indicators summarize price/volume math — they describe recent behavior, not the future. RSI (Wilder, 1978) measures momentum speed. MACD (Appel, 1970s) tracks relationship between two EMAs. Bollinger Bands (Bollinger, 1980s) frame volatility. Use them as confirmation with price action, not as crystal balls.</p>
+
+        <div class="ref-table-wrap">
+          <table class="ref-table">
+            <thead>
+              <tr><th>Indicator</th><th>Default settings</th><th>Key signals</th><th>Common mistake</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>RSI</td><td>14 periods, 0–100 scale</td><td>&gt;70 overbought, &lt;30 oversold; divergence; 50 midline bias</td><td>Selling every &gt;70 in a strong uptrend</td></tr>
+              <tr><td>MACD</td><td>12, 26, 9 EMA</td><td>Line vs signal cross; zero-line cross; histogram shrink/grow</td><td>Trading every tiny cross in chop</td></tr>
+              <tr><td>Bollinger Bands</td><td>20 SMA ± 2σ</td><td>Band touch, %B, squeeze → expansion breakout</td><td>Treating upper band touch as automatic short</td></tr>
+              <tr><td>Volume</td><td>vs 20-day avg</td><td>Breakout + high volume = conviction; low volume = suspect</td><td>Ignoring volume on pattern breaks</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ref-grid">
+          <div class="ref-card">
+            <h4>RSI formula (concept)</h4>
+            <p>RS = (average gain over N periods) ÷ (average loss over N periods). RSI = 100 − (100 ÷ (1 + RS)). RSI describes <em>recent</em> strength — not guaranteed reversal. In trends, use 40/60 or divergence instead of rigid 30/70.</p>
+          </div>
+          <div class="ref-card">
+            <h4>MACD components</h4>
+            <ul>
+              <li><strong>MACD line</strong> = EMA(12) − EMA(26)</li>
+              <li><strong>Signal line</strong> = EMA(9) of MACD line</li>
+              <li><strong>Histogram</strong> = MACD − signal (often turns before the cross)</li>
+            </ul>
+          </div>
+          <div class="ref-card">
+            <h4>Bollinger squeeze workflow</h4>
+            <ol style="margin:0.35rem 0 0 1.1rem;font-size:0.8rem;color:var(--color-text-secondary);line-height:1.55;">
+              <li>Band width = (Upper − Lower) ÷ Middle × 100</li>
+              <li>Width at multi-month low → volatility compression</li>
+              <li>Wait for expansion + breakout direction</li>
+              <li>Confirm with RSI/MACD and volume</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="callout"><strong>Confluence stack (example):</strong> Daily uptrend + price at lower Bollinger Band + RSI bullish divergence + MACD histogram turning up + volume spike on hammer = higher-quality long setup than any single indicator alone.</div>
+
+        <ul class="tips-list">
+          <li><strong>Leading</strong> (RSI, Stochastic) — anticipate; more false signals in ranges.</li>
+          <li><strong>Lagging</strong> (MACD, MAs) — confirm; late in fast reversals.</li>
+          <li>~95% of price theoretically sits within ±2σ bands (normal distribution assumption — markets fat-tail).</li>
+          <li>On NSE, compare volume to 20-day average; delivery % adds context for institutional participation.</li>
+          <li>Limit yourself to 2–3 indicators you can explain without looking at notes.</li>
+        </ul>
+
+        <p class="source-note">Further reading: <a href="https://www.investopedia.com/terms/b/bollingerbands.asp" target="_blank" rel="noopener noreferrer">Investopedia — Bollinger Bands</a> · <a href="https://chartinglens.com/blog/rsi-macd-bollinger-bands-guide" target="_blank" rel="noopener noreferrer">RSI, MACD &amp; BB guide</a> · <a href="https://brokerlytic.com/articles/technical-indicators-deep-dive" target="_blank" rel="noopener noreferrer">Indicator deep dive (formulas)</a></p>
+      </section>
+    </div>
+
+    <div class="day-panel" id="d4">
+      <div class="day-header">
+        <div class="day-badge">Day 4 · 60 min</div>
+        <div>
+          <div class="day-title">Chart patterns — reversal & continuation</div>
+          <div class="day-subtitle">Predicting the next move from how price has been consolidating</div>
+          <span class="day-theme">Difficulty: Intermediate–Advanced</span>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="seg">
+          <div class="seg-time">0–5 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Framing: patterns as compressed battles</div>
+            <div class="seg-desc">Each chart pattern represents a battle between buyers and sellers played out over many candles. The resolution (breakout direction) tells you who won. Introduce the two families: reversal patterns (trend is likely ending) and continuation patterns (trend is pausing before resuming).</div>
+            <div class="seg-tags"><span class="tag concept">Reversal vs continuation</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">5–28 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Reversal patterns</div>
+            <div class="seg-desc"><strong>Head and Shoulders (H&amp;S):</strong> Most reliable reversal. Left shoulder → Head (higher high) → Right shoulder (lower high) → Neckline break = entry. Price target = height of head measured from neckline downward. Show inverse H&amp;S for bullish reversal.<br><br><strong>Double Top / Double Bottom:</strong> Two touches at the same level. Break of the middle trough (double top) = bearish. Break of the middle peak (double bottom) = bullish. Price target = height of the pattern.<br><br><strong>Rounding top / bottom:</strong> Gradual shift in momentum, less common. Show real examples of all three on index/stock charts. For each: where to enter, where to place stop-loss, how to calculate the target.</div>
+            <div class="seg-tags"><span class="tag concept">H&amp;S</span><span class="tag concept">Double top/bottom</span><span class="tag concept">Entry, SL, target</span><span class="tag method">Real chart examples</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">28–48 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Continuation patterns</div>
+            <div class="seg-desc"><strong>Flags & Pennants:</strong> A sharp move (flagpole) followed by a tight consolidation against the trend. Breakout resumes the original move. Target = flagpole length projected from breakout. Bull flag vs bear flag.<br><br><strong>Triangles:</strong> Ascending triangle (flat top, rising bottom = buyers getting aggressive → bullish breakout likely). Descending triangle (flat bottom, falling top = bearish). Symmetrical triangle (either direction, wait for breakout with volume).<br><br><strong>Cup and handle:</strong> Rounded U-shaped base followed by a smaller pullback (handle) → breakout from handle resistance is the entry. Common in growth stocks. Discuss fake breakouts — the enemy of pattern trading — and how volume filters them out.</div>
+            <div class="seg-tags"><span class="tag concept">Flag/Pennant</span><span class="tag concept">Triangles</span><span class="tag concept">Cup &amp; Handle</span><span class="tag concept">Fake breakout</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">48–60 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Pattern hunt challenge</div>
+            <div class="seg-desc">Give attendees 5–6 charts and ask them to: (1) identify the pattern, (2) classify as reversal or continuation, (3) call the likely breakout direction, (4) state an entry, stop, and target. Review answers as a group — discuss why someone might have misread a pattern (e.g., H&amp;S without neckline break, triangle missing volume confirmation).</div>
+            <div class="seg-tags"><span class="tag activity">Chart quiz</span><span class="tag activity">Group discussion</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="outcome-box">
+        <div class="outcome-title">Day 4 outcomes</div>
+        <ul class="outcome-list">
+          <li>Can identify H&amp;S, double top/bottom, flags, triangles, cup &amp; handle</li>
+          <li>Can calculate a measured move price target for any pattern</li>
+          <li>Knows where to enter, set a stop, and take profit for each setup</li>
+          <li>Understands how to use volume to validate or reject a breakout</li>
+        </ul>
+      </div>
+
+      <section class="supplement" aria-labelledby="d4-ref">
+        <h3 class="supplement-title" id="d4-ref">Extended reference · Chart patterns</h3>
+        <p class="supplement-intro">Chart patterns map repeated battles between buyers and sellers. <strong>Reversal</strong> patterns suggest trend exhaustion; <strong>continuation</strong> patterns suggest pause before resumption. Always require <strong>neckline/boundary break + volume</strong> before acting. Measured-move targets are guides, not guarantees.</p>
+
+        <div class="ref-table-wrap">
+          <table class="ref-table">
+            <thead>
+              <tr><th>Pattern</th><th>Type</th><th>Entry trigger</th><th>Stop (typical)</th><th>Target (measured move)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Head &amp; shoulders</td><td>Reversal (bearish)</td><td>Close below neckline</td><td>Above right shoulder</td><td>Head height projected down from break</td></tr>
+              <tr><td>Inverse H&amp;S</td><td>Reversal (bullish)</td><td>Close above neckline</td><td>Below right shoulder</td><td>Head depth projected up from break</td></tr>
+              <tr><td>Double top / bottom</td><td>Reversal</td><td>Break of middle trough/peak</td><td>Beyond pattern extreme</td><td>Height of pattern</td></tr>
+              <tr><td>Bull / bear flag</td><td>Continuation</td><td>Break of flag trendline</td><td>Opposite side of flag</td><td>Flagpole length from breakout</td></tr>
+              <tr><td>Ascending triangle</td><td>Continuation (often bull)</td><td>Break above flat resistance</td><td>Below rising support</td><td>Triangle height at widest point</td></tr>
+              <tr><td>Symmetrical triangle</td><td>Either way</td><td>Break + volume</td><td>Inside pattern</td><td>Project height of triangle base</td></tr>
+              <tr><td>Cup &amp; handle</td><td>Continuation (bull)</td><td>Break above handle high</td><td>Below handle low</td><td>Cup depth from breakout</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ref-grid">
+          <div class="ref-card">
+            <h4>Head &amp; shoulders structure</h4>
+            <p>Three peaks: left shoulder, higher <strong>head</strong>, lower right shoulder. <strong>Neckline</strong> connects swing lows between shoulders. Distribution phase — buyers lose control. Confirm only on neckline break; retest of neckline as resistance can offer better R:R than chasing the first break.</p>
+          </div>
+          <div class="ref-card">
+            <h4>Entry styles</h4>
+            <ul>
+              <li><strong>Breakout entry</strong> — act immediately on confirmed close beyond boundary (faster, more false breaks).</li>
+              <li><strong>Retest entry</strong> — wait for pullback to broken neckline/S/R (slower, often better R:R).</li>
+            </ul>
+          </div>
+          <div class="ref-card">
+            <h4>Fake breakouts</h4>
+            <p>Low-volume breaks, wide spreads near news, and breaks without follow-through candles often fail. Filter with volume ≥ 1.5× average and alignment with higher-timeframe trend.</p>
+          </div>
+        </div>
+
+        <ul class="tips-list">
+          <li>Never trade a pattern before the <strong>neckline or boundary closes</strong> on your timeframe.</li>
+          <li>H&amp;S with a sloping neckline is valid but harder — adjust measured move accordingly.</li>
+          <li>Flags should slope <em>against</em> the prior sharp move (flagpole); pennants are small symmetrical triangles after a pole.</li>
+          <li>Wedges (rising/falling) can act as reversal or continuation — context and volume decide.</li>
+          <li>Bulkowski’s Encyclopedia of Chart Patterns ranks reliability by pattern type and market — useful for prioritizing what to teach first.</li>
+        </ul>
+
+        <p class="source-note">Further reading: <a href="https://www.investopedia.com/terms/i/inverseheadandshoulders.asp" target="_blank" rel="noopener noreferrer">Investopedia — Inverse H&amp;S</a> · <a href="https://www.tmgm.com/en/academy/trading-academy/head-and-shoulders-chart-pattern" target="_blank" rel="noopener noreferrer">H&amp;S pattern guide</a> · <a href="https://school.stockcharts.com/doku.php?id=chart_analysis:chart_patterns" target="_blank" rel="noopener noreferrer">StockCharts ChartSchool — Patterns</a></p>
+      </section>
+    </div>
+
+    <div class="day-panel" id="d5">
+      <div class="day-header">
+        <div class="day-badge">Day 5 · 60 min</div>
+        <div>
+          <div class="day-title">Strategy, multi-timeframe & risk management</div>
+          <div class="day-subtitle">Building a complete, repeatable trade framework from everything learned</div>
+          <span class="day-theme">Difficulty: Advanced</span>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="seg">
+          <div class="seg-time">0–8 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Multi-timeframe analysis (MTF)</div>
+            <div class="seg-desc">The higher the timeframe, the more significant the level. Use the "zoom out first" approach: weekly chart for macro trend → daily chart for key SR levels and patterns → 4H or 1H for entry triggers. If the weekly trend is down but the daily shows a bull flag, it's a lower-conviction trade. Highest conviction = all three timeframes aligned. Demonstrate: open a weekly NIFTY chart, then zoom into daily, then 4H, showing how each level of detail adds information.</div>
+            <div class="seg-tags"><span class="tag concept">HTF / LTF</span><span class="tag concept">Trend alignment</span><span class="tag method">Zoom in/out demo</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">8–22 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Building a confluence-based setup</div>
+            <div class="seg-desc">Walk through a full real-life setup checklist: (1) What's the HTF trend? (2) Is price at a significant SR zone? (3) Is there a candlestick pattern at the level? (4) Is an MA nearby (dynamic support)? (5) What do RSI and MACD say? (6) Is volume confirming? Demonstrate this on a real historical trade (use a past breakout or reversal on NIFTY/Reliance). Show how checking off 5–6 items creates a high-probability setup. Also show a low-quality setup (only 2 items checked) and why it's best avoided.</div>
+            <div class="seg-tags"><span class="tag concept">Setup checklist</span><span class="tag activity">Live walkthrough</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">22–38 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Risk management — the most important session</div>
+            <div class="seg-desc">Open bluntly: "Even a 40% win rate can be profitable with good risk management." Core concepts:<br><br><strong>Stop-loss:</strong> Non-negotiable. Below SR / below pattern / below MA. Never wider than you can afford per trade.<br><br><strong>Risk-reward ratio (RRR):</strong> Minimum 1:2 — risk ₹1 to make ₹2. At 1:3, you can be wrong 67% of the time and still break even. Calculate RRR for every trade before entering.<br><br><strong>Position sizing:</strong> Risk only 1–2% of total capital per trade. Formula: Position size = (Capital × Risk%) ÷ (Entry − Stop). Work through a numerical example with real numbers.<br><br><strong>Trailing stops:</strong> Lock in profits as price moves in your favor. Move stop to breakeven once 1R is hit.</div>
+            <div class="seg-tags"><span class="tag concept">Stop-loss</span><span class="tag concept">RRR</span><span class="tag concept">Position sizing</span><span class="tag concept">Trailing stop</span><span class="tag method">Numerical worked example</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">38–52 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div><div class="seg-line"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Full mock trade plan — live exercise</div>
+            <div class="seg-desc">Give attendees a current or recent chart and ask each person or pair to write a complete trade plan: HTF bias, entry trigger, stop-loss level, target, RRR, and position size if capital = ₹1,00,000. Present to the room. Discuss: where do plans agree? Where do they differ and why? This forces everyone to make their thinking explicit — and exposes gaps in understanding better than any lecture.</div>
+            <div class="seg-tags"><span class="tag activity">Trade plan exercise</span><span class="tag activity">Group presentation</span></div>
+          </div>
+        </div>
+        <div class="seg">
+          <div class="seg-time">52–60 min</div>
+          <div class="seg-connector"><div class="seg-dot"></div></div>
+          <div class="seg-card">
+            <div class="seg-label">Bootcamp wrap-up & what's next</div>
+            <div class="seg-desc">Recap the full arc: candlesticks → trend → indicators → patterns → strategy. Emphasize: all TA is probabilistic, not certain. The edge comes from consistency — using the same framework over many trades. Recommend next steps: paper trading for 30 days before real capital, keeping a trade journal, and studying one new concept per week. Suggest resources: TradingView, Investopedia, and StockCharts chartschool. Open Q&amp;A.</div>
+            <div class="seg-tags"><span class="tag activity">Q&amp;A</span><span class="tag activity">Resources shared</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="outcome-box">
+        <div class="outcome-title">Day 5 outcomes</div>
+        <ul class="outcome-list">
+          <li>Can analyze any chart top-down across multiple timeframes</li>
+          <li>Has a personal setup checklist combining all 5 days of learning</li>
+          <li>Understands position sizing, stop-loss placement, and RRR calculation</li>
+          <li>Can write and present a complete, structured trade plan</li>
+        </ul>
+      </div>
+
+      <section class="supplement" aria-labelledby="d5-ref">
+        <h3 class="supplement-title" id="d5-ref">Extended reference · Strategy, MTF &amp; risk management</h3>
+        <p class="supplement-intro">Professional trading is less about prediction and more about <strong>process</strong>: define bias on a higher timeframe, enter on a lower one, risk a fixed % per trade, and target favorable reward relative to stop distance. Even ~40% win rate can be profitable if losers are small and winners are larger (positive expectancy).</p>
+
+        <div class="ref-table-wrap">
+          <table class="ref-table">
+            <thead>
+              <tr><th>Timeframe</th><th>Role</th><th>What to decide</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Weekly</td><td>Macro bias</td><td>Bull, bear, or range; major S/R; ignore noise</td></tr>
+              <tr><td>Daily</td><td>Setup zone</td><td>Patterns, MAs, key levels, indicator context</td></tr>
+              <tr><td>4H / 1H</td><td>Execution</td><td>Entry trigger, stop placement, precise R:R</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ref-grid">
+          <div class="ref-card">
+            <h4>6-point confluence checklist</h4>
+            <ol style="margin:0.35rem 0 0 1.1rem;font-size:0.8rem;color:var(--color-text-secondary);line-height:1.55;">
+              <li>HTF trend direction aligned?</li>
+              <li>Price at major S/R or round number?</li>
+              <li>Candlestick pattern at the level?</li>
+              <li>MA (20/50/200) supporting the idea?</li>
+              <li>RSI/MACD confirming (no major divergence against you)?</li>
+              <li>Volume confirming the move or break?</li>
+            </ol>
+          </div>
+          <div class="ref-card">
+            <h4>Position sizing (percent risk)</h4>
+            <p><strong>Account risk</strong> = Capital × Risk% (e.g. ₹1,00,000 × 1% = ₹1,000 max loss).<br>
+            <strong>Shares</strong> = Account risk ÷ (Entry − Stop) per share.<br>
+            Example: Entry ₹500, stop ₹485 (₹15 risk) → ₹1,000 ÷ 15 ≈ <strong>66 shares</strong>.</p>
+          </div>
+          <div class="ref-card">
+            <h4>Risk–reward math</h4>
+            <p>RRR = (Target − Entry) ÷ (Entry − Stop). At <strong>1:2</strong>, one winner covers two losers of equal size. At <strong>1:3</strong>, break-even win rate ≈ 25%. Always compute RRR <em>before</em> entry — skip trades below your minimum (often 1:2).</p>
+          </div>
+        </div>
+
+        <div class="callout"><strong>Sample trade plan template:</strong> Instrument · HTF bias · Setup type · Entry trigger · Stop · Target · RRR · Position size · Invalidation (what proves you wrong) · Max hold time · Journal note after close.</div>
+
+        <ul class="tips-list">
+          <li><strong>Stop-loss</strong> — below pattern low, below neckline, or below nearest S/R; never “hope” without a defined exit.</li>
+          <li><strong>Trailing stop</strong> — move to breakeven after +1R; trail under higher lows in trends.</li>
+          <li><strong>ATR</strong> — use Average True Range to size stops in volatile names (wider stop → smaller position).</li>
+          <li>Paper trade 30+ setups before sizing real capital; journal every trade (screenshot + checklist score).</li>
+          <li>Avoid oversized positions before RBI policy, Budget, or heavy earnings — gap risk breaks technical stops.</li>
+        </ul>
+
+        <div class="ref-grid">
+          <div class="ref-card">
+            <h4>Recommended tools &amp; learning</h4>
+            <ul>
+              <li><strong>TradingView</strong> — charts, indicators, paper trading</li>
+              <li><strong>Investopedia</strong> — definitions and strategy articles</li>
+              <li><strong>StockCharts ChartSchool</strong> — pattern and indicator reference</li>
+              <li><strong>NSE India</strong> — official data, market hours, circuit limits</li>
+            </ul>
+          </div>
+          <div class="ref-card">
+            <h4>Expectancy (why R:R matters)</h4>
+            <p>Expectancy = (Win% × Avg win) − (Loss% × Avg loss). Positive expectancy over many trades is the goal — not winning every trade. Discipline beats prediction.</p>
+          </div>
+        </div>
+
+        <p class="source-note">Further reading: <a href="https://www.trade-ideas.com/2025/06/10/how-to-swing-trade-with-effective-risk-management-and-position-sizing/" target="_blank" rel="noopener noreferrer">Trade Ideas — Risk &amp; sizing</a> · <a href="https://tradeciety.com/professional-position-sizing" target="_blank" rel="noopener noreferrer">Tradeciety — Position sizing</a> · <a href="https://www.investopedia.com/terms/r/rsi.asp" target="_blank" rel="noopener noreferrer">Investopedia — RSI</a></p>
+      </section>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <strong>PIEDS</strong> · Technical Analysis Bootcamp · Instructor session guide
+  </footer>
+
+  <script>
+    function switchTab(id) {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === id);
+        b.setAttribute('aria-selected', b.dataset.tab === id);
+      });
+      document.querySelectorAll('.day-panel').forEach(p => {
+        const active = p.id === id;
+        p.classList.toggle('active', active);
+        p.hidden = !active;
+      });
+      if (id !== 'overview') {
+        window.scrollTo({ top: document.querySelector('.nav-wrap').offsetTop - 16, behavior: 'smooth' });
+      }
+    }
+
+    document.getElementById('tabs').addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (btn) switchTab(btn.dataset.tab);
+    });
+
+    document.querySelectorAll('.overview-card').forEach(card => {
+      card.addEventListener('click', () => switchTab(card.dataset.goto));
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', btn.classList.contains('active'));
+    });
+    document.querySelectorAll('.day-panel').forEach((panel, i) => {
+      if (!panel.classList.contains('active')) panel.hidden = true;
+      panel.setAttribute('role', 'tabpanel');
+    });
+  </script>
+</body>
+</html>
